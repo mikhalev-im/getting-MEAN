@@ -1,11 +1,28 @@
 doctype html
 html
   head
-    meta(name='viewport', content='width=device-width, initial-scal=1.0')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
     title= title
     link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
-    block content
+    nav.navbar.navbar-default.navbar-fixed-top
+      .container
+        .navbar-header
+          button.navbar-toggle(type='button', data-toggle='collapse', data-target='#navbar-main')
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand(href='/') Loc8r
+        div#navbar-main.navbar-collapse.collapse
+          ul.nav.navbar-nav
+            li
+              a(href='/about/') About
+    .container
+      block content
+      footer
+        .row
+          .col-xs-12
+            small &copy; Igor Mikhalev
     script(src='/javascripts/jquery.min.js')
     script(src='/javascripts/bootstrap.min.js')
