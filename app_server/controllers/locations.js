@@ -45,6 +45,69 @@ function _formatDistance(distance) {
   return numDistance + unit;
 }
 
+function renderDetailPage(req, res, locDetail) {
+  res.render('location-info', {
+    title: locDetail.name,
+    pageHeader: {title: locDetail.name},
+    location: locDetail,
+    sidebar: {
+      context: "is on Loc8r because it has accessible " +
+            "wifi and space to sit down with your laptop and get" +
+            " some work done.",
+      callToAction: "If you've been and you like it - or if you don't - " +
+             "please  leave a review to help other people just like you."
+    }
+  });
+}
+
+function renderReviewForm(req, res, locDetail) {
+  res.render('location-review-form', {
+    title: 'Review ' + locDetail.name + ' on Loc8r',
+    pageHeader: {
+      title:'Review ' + locDetail.name,
+    },
+    error: req.query.err
+  });
+}
+
+function getLocationInfo(req, res, callback) {
+  var requestOptions, path;
+  path = "/api/locations/" + req.params.locationid;
+  requestOptions = {
+    url: apiOptions.server + path,
+    method: 'GET',
+    json: {}
+  };
+  request(requestOptions, function(err, response, body) {
+    var data = body;
+    if (response.statusCode === 200) {
+      data.coords = {
+        lng: body.coords[0],
+        lan: body.coords[1]
+      };
+      callback(req, res, data);
+    } else {
+      _showError(req, res, response.statusCode);
+    }
+  });
+}
+
+function _showError(req, res, status) {
+  var title, content;
+  if (status === 404) {
+    title = "404, page not found";
+    content = "Oh dear. Looks like we can't find this page. Sorry.";
+  } else {
+    title = status + ", something's gone wrong";
+    content = "Something, somewhere, has gone just a little bit wrong.";
+  }
+  res.status(status);
+  res.render('generic-text', {
+    title: title,
+    content: content
+  });
+}
+
 module.exports.homelist = function(req, res) {
   var requestOptions, path;
   path = '/api/locations';
@@ -71,67 +134,43 @@ module.exports.homelist = function(req, res) {
 };
 
 module.exports.locationInfo = function(req, res) {
-  res.render('location-info', {
-    title: 'Location info',
-    location: {
-      name: 'Starcups',
-      address: '125 High Street, Reading, RG6 1PS',
-      rating: 3,
-      facilities: ['Hot drinks', 'Food', 'Premium wifi'],
-      distance: '100m',
-      openingTimes: [
-        {
-          days: 'Monday-Friday',
-          opening: '7:00am',
-          closing: '7:00pm',
-          closed: false
-        },
-        {
-          days: 'Saturday',
-          opening: '8:00am',
-          closing: '5:00pm',
-          closed: false
-        },
-        {
-          days: 'Sunday',
-          closed: true
-        }
-      ],
-      mapSource: "http://maps.googleapis.com/maps/api/" +
-                 "staticmap?center=51.455041,-0.9690884&zoom=17" +
-                 "&size=400x350&sensor=false&markers=" +
-                 "51.455041,-0.9690884&scale=2"
-    },
-    reviews: [
-      {
-        author: 'Simon Holmes',
-        date: '16 July 2013',
-        rating: 5,
-        review: "Whar a great place. I can't say enough good things about it."
-      },
-      {
-        author: 'Charlie Chaplin',
-        date: '16 June 2013',
-        rating: 3,
-        review: "It was okay. Coffee wasn't great, but the wifi was fast."
-      }
-    ],
-    sidebar: {
-      context: "Simon's cafe is on Loc8r because it has accessible " +
-            "wifi and space to sit down with your laptop and get" +
-            " some work done.",
-      callToAction: "If you've been and you like it - or if you don't - " +
-             "please  leave a review to help other people just like you."
-    }
-
+  getLocationInfo(req, res, function(req, res, responseData) {
+    renderDetailPage(req, res, responseData);
   });
 };
 
 module.exports.addReview = function(req, res) {
-  res.render('location-review-form', {
-    title: 'Review Starcups on Loc8r',
-    pageHeader: {
-      title:'Review Starcups'
-    }
+  getLocationInfo(req, res, function(req, res, responseData) {
+    renderReviewForm(req, res, responseData);
   });
+};
+
+module.exports.doAddReview = function(req, res) {
+  var requestOptions, path, locationid, postdata;
+  locationid = req.params.locationid;
+  path = "/api/locations/" + locationid + "/reviews";
+  postdata = {
+    author: req.body.name,
+    rating: parseInt(req.body.rating, 10),
+    reviewText: req.body.review
+  };
+  requestOptions = {
+    url: apiOptions.server + path,
+    method: "POST",
+    json: postdata
+  };
+  
+  if (!postdata.author || !postdata.rating || !postdata.reviewText) {
+    res.redirect('/locations/' + locationid + '/reviews/new?err=val');
+  } else {
+    request(requestOptions, function(err, response, body) {
+      if (response.statusCode === 201) {
+        res.redirect('/location/' + locationid);
+      } else if (response.statusCode === 400 && body.name && body.name === 'ValidationError') {
+        res.redirect('/location/' + locationid + '/reviews/new?err=val');
+      } else {
+        _showError(req, res, response.statusCode);
+      }
+    });
+  }
 };

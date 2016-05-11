@@ -36,23 +36,24 @@ block content
             .panel-heading
               h2.panel-title Location map
             .panel-body
-              img.img-responsive.img-rounded(src=location.mapSource)
+              img.img-responsive.img-rounded(src='http://maps.googleapis.com/maps/api/staticmap?center=#{location.coords.lan},#{location.coords.lng}&zoom=17&size=400x350&sensor=false&markers=#{location.coords.lan},#{location.coords.lng}&scale=2')
         .col-xs-12
           .panel.panel-primary.review-panel
             .panel-heading
-              a.btn.btn-default.pull-right(href="/location/review/new") Add review
+              a.btn.btn-default.pull-right(href="/location/#{location._id}/reviews/new") Add review
               h2.panel-title Customers reviews
             .panel-body.review-container
-              each review in reviews
+              each review in location.reviews
                 .row
                   .review
                     .well.well-sm.review-header
                       span.rating
                         +outputRating(review.rating)
-                      span.reviewAuthor= review.author
-                      small.reviewTimestamp= review.date
+                      span.reviewAuthor= " " + review.author + ", "
+                      small.reviewTimestamp
+                        +formatDate(review.createdOn)
                     .col-xs-12
-                      p= (review.review).replace(/\n/g, '<br>')
+                      p= (review.reviewText).replace(/\n/g, '<br>')
     .col-xs-12.col-md-3
-      p.lead= sidebar.context
+      p.lead= location.name + " " + sidebar.context
       p= sidebar.callToAction
