@@ -19,13 +19,21 @@ html(ng-app='loc8rApp')
             li
               a(href='/about/') About
     .container
-      block content
+      div(ng-view)
+        block content
       footer
         .row
           .col-xs-12
             small &copy; Igor Mikhalev
     script(src='/angular/angular.min.js')
-    script(src='/angular/loc8rApp.js')
+    script(src='/lib/angular-route.min.js')
+    script(src='/angular/loc8r.min.js')
+//    script(src='/app.js')
+//    script(src='/home/home.controller.js')
+//    script(src='/common/services/loc8rData.service.js')
+//    script(src='/common/services/geolocation.service.js')
+//    script(src='/common/directive/ratingStars/ratingStars.directive.js')
+//    script(src='/common/filters/formatDistance.filter.js')
     script(src='/javascripts/jquery.min.js')
     script(src='/javascripts/bootstrap.min.js')
     script(src='/javascripts/validation.js')

@@ -11,3 +11,7 @@ module.exports.about = function(req, res) {
              'fugit temporibus. Necessitatibus, alias.'
   });
 };
+
+module.exports.angularApp = function(req, res) {
+  res.render('layout', {title: 'Loc8r'});
+}
