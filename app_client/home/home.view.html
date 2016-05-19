@@ -1,14 +1,6 @@
-<div id="banner" class="page-header">
-  <div class="row">
-    <div class="col-lg-6">
-      <h1>
-        {{ vm.pageHeader.title }}
-        <small> {{ vm.pageHeader.strapline }} </small>
-      </h1>
-    </div>
-  </div>
-
-  
+<navigation></navigation>
+<div class="container">
+  <page-header content="vm.pageHeader"></page-header>  
   <div class="row">
     <div class="col-xs-12 col-sm-8">
       <label for="filter">Filter results</label>
@@ -34,4 +26,5 @@
       <p class="lead">{{ vm.sidebar.content }}</p>
     </div>
   </div>
+  <footer-generic></footer-generic>
 </div>
