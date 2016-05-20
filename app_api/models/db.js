@@ -51,3 +51,4 @@ process.on('SIGTERM', function() {
 
 // load schemas
 require('./locations');
+require('./users');
