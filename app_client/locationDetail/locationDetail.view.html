@@ -47,7 +47,8 @@
         <div class="col-xs-12">
           <div class="panel panel-primary review-panel">
             <div class="panel-heading">
-              <a href="" ng-click="vm.popupRivewForm()" class="btn btn-default pull-right">Add review</a>
+              <a ng-show="vm.isLoggedIn" href="" ng-click="vm.popupRivewForm()" class="btn btn-default pull-right">Add review</a>
+              <a ng-hide="vm.isLoggedIn" href="login?page={{ vm.currentPath }}" class="btn btn-default pull-right">Login to add review</a>
               <h2 class="panel-title">Customer review</h2>
             </div>
             <div class="panel-body review-container">

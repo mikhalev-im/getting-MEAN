@@ -2,6 +2,7 @@
 
 var mongoose = require('mongoose');
 var Loc = mongoose.model('Location');
+var User = mongoose.model('User');
 
 function getAuthor(req, res, callback) {
   if (req.payload && req.payload.email) {
@@ -61,7 +62,7 @@ function doSetAverageRating(location) {
 }
 
 module.exports.reviewsCreate = function(req, res) {
-  getAuthor(req, res, function(req, res, userNaem){
+  getAuthor(req, res, function(req, res, userName){
     var locationid = req.params.locationid;
     if (locationid) {
       Loc

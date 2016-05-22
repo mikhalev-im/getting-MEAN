@@ -35,6 +35,7 @@ module.exports.locationsListByDistance = function(req, res) {
   
   var lng = parseFloat(req.query.lng),
       lat = parseFloat(req.query.lat),
+      distance = parseInt(req.query.maxDistance) * 1000 || 20000,
       point = {
         type: "Point",
         coordinates: [lng, lat]
@@ -42,7 +43,8 @@ module.exports.locationsListByDistance = function(req, res) {
       geoOptions = {
         spherical: true,
         num: 10,
-        maxDistance: 2000
+        // maxDistance must be in meters
+        maxDistance: distance
       };
 
   Loc.geoNear(point, geoOptions, function(err, results, stats) {

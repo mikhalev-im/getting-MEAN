@@ -6,7 +6,8 @@
   function navigation() {
     return {
       restrict: 'EA',
-      templateUrl: '/common/directive/navigation/navigation.template.html'
+      templateUrl: '/common/directive/navigation/navigation.template.html',
+      controller: 'navigationCtrl as navvm'
     }
   }
 })();
